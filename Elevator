@@ -1,0 +1,297 @@
+
+
+Skip to content
+Using Gmail with screen readers
+lift  
+Meet
+New meeting
+Join a meeting
+Hangouts
+
+Flowchart and algorithm for this
+
+Harshita Mp <harshita.madhavan@gmail.com>
+Attachments
+Mar 1, 2019, 6:39 AM
+to stuthin
+
+This is the final program ! Please make the changes in the algorithm ND flowchart
+Attachments area
+
+#include <stdio.h>
+#include<iostream>
+#include <stdlib.h>
+#include <ctype.h>
+#include <math.h>
+using namespace std;
+void showstatus( ) ;
+void allotlift ( int *, int, int, char ) ;
+
+/* show current status, i.e. the floor no. on which
+   the lifts are standing */
+void showstatus ( int*lf )
+{
+    int i ;
+
+    for ( i = 0 ; i < 5 ; i++ )
+        cout<< "LIFT"<<i<<" IS ON FLOOR NUMBER\t"<<lf[i]<<"\n";
+}
+
+/* allot the lift to the user */
+void allotlift ( int *lf, int userfloor, int gotofloor, char d )
+{
+    /* struct p to store the difference between 2 lifts */
+struct p
+    {
+        int lfno[5] ;
+         int pos[5] ;
+        int diff[5] ;
+    } arr ;
+
+    int lno = -1 ;      /* to store the lift no. that can be made available */
+int i, j, k, t1, t2, t3 ;
+
+    /* initialize array */
+for ( i = 0; i < 5; i++ )
+    {
+        arr.lfno[i] = i ;
+        arr.pos[i] = 0 ;
+        arr.diff[i] = 0 ;
+    }
+
+    while ( lno == -1 )
+    {
+        /* get the current position of a lift */
+for ( i = 0 ; i < 5; i++ )
+            arr.pos[i] = lf[i] ;
+
+        for ( i = 0; i < 5; i++ )
+        {
+            /* get the diff. between floor on which lift is standing
+               and the floor on which the user is standing */
+
+            arr.diff[i] = abs ( arr.pos[i] - userfloor ) ;
+        }
+
+        /* sort array */
+for ( i = 0; i < 5; i++ )
+        {
+            for ( j = 0; j < 4; j++ )
+            {
+                if ( arr.diff[i] < arr.diff[j] )
+                {
+
+                    t1 = arr.lfno[i] ;
+                    t2 = arr.pos[i] ;
+                    t3 = arr.diff[i] ;
+                    arr.lfno[i] = arr.lfno[j] ;
+                    arr.pos[i] = arr.pos[j] ;
+                    arr.diff[i] = arr.diff[j] ;
+                    arr.lfno[j] = t1 ;
+                    arr.pos[j] = t2 ;
+                    arr.diff[j] = t3 ;
+                }
+            }
+        }
+
+        /* check for the lift that can be alloted
+           depending on the direction */
+for ( i = 0, k = 0; i < 5; i++ )
+        {
+            k = arr.lfno[i] ;
+
+            if (( d == 'u' ) && (( lf[k] < userfloor ) ||( lf[k] == 0 ) ||( lf[k] == userfloor ) ) )
+            {
+                lno = k ;
+                break ;
+            }
+
+            if ( ( d == 'd' ) && (
+                 ( lf[k] > userfloor ) ||
+                 ( lf[k] == 0 ) ||
+                 ( lf[k] == userfloor ) ) )
+            {
+                lno = k ;
+                break ;
+            }
+        }
+
+        /* if none of the lift has been alloted */
+
+        j = 30 ;
+        if ( lno == -1 )
+        {
+            for ( i = 0; i < 5; i++ )
+            {
+                if ( j > arr.diff[i] )
+                {
+                    j = arr.diff[i] ;
+                    lno = i ;
+                }
+            }
+        }
+    }
+
+    cout<<"\nTHE LIFT AVAILABLE TO YOU WOULD BE LIFT NUMBER:\t"<<lno;
+
+    lf[lno] = gotofloor ;
+}
+
+/* the main menu */
+int showmenu( )
+{
+    int c ;
+
+    cout<<" -------------------- LIFT PROGRAM -------------------- \n";
+    cout<<"\n";
+    cout<< " THERE ARE 5 LIFTS AVAILABLE FOR YOUR SERVICE \n" ;
+    cout<< " SELECT 1 IF YOU WANT TO USE A LIFT \n" ;
+    cout<< " SELECTING 2 WOULD SHOW THE STATUS OF EACH OF THE FIVE LIFTS....  \n"  ;
+    cout<< " AND THE FLOOR NUMBER ON WHICH THE LIFT IS CURRENTLY STANDING\n"  ;
+    cout<< " SELECT 3 TO QUIT THE PROGRAM \n"  ;
+    cout<< " ------------------------------------------------------ \n";
+    cout<< " 1.DO YOU WISH TO USE LIFT?\n"  ;
+    cout<< " 2.SHOW STATUS OF LIFT\n"  ;
+    cout<< " 3.EXIT\n"  ;
+    cout<< " ------------------------------------------------------ \n" ;
+    cin>>c;
+
+    return c ;
+}
+
+void validate ( int *fs, int *ft, char *d )
+{
+    int userfloor, gotofloor ;
+    char dir ;
+    int flag ;
+    unsigned char chr ;
+
+    userfloor = gotofloor = -1 ;
+    flag = 0 ;
+
+    while ( userfloor < 0 || userfloor > 29 )
+    {
+        cout<< "ENTER THE FLOOR NUMBER WHERE YOUR STANDING : "  ;
+        cin>>userfloor;
+
+        if  ( userfloor < 0 || userfloor > 29 )
+        {
+            cout<< "\nINCORRECT FLOOR NUMBER!! ENTER FLOOR NUMBER IN THE RANGE OF 0 TO 29:\n\n";
+            getchar();
+        }
+    }
+
+    while ( flag == 0 )
+    {
+        dir = 'j' ;
+        while ( tolower ( dir ) != 'u' && tolower ( dir ) != 'd')
+        {
+            cout<< "DO YOU WISH TO GO UP OR DOWN (UP/DOWN): " ;
+            cin>>dir ;
+            cout<< "\n";
+
+            if ( dir != 'u' && dir != 'd' )
+                cout<< "INCORRECT DIRECTION!!ENTER AGAIN:\n"  ;
+        }
+
+        if ( userfloor == 0 && dir == 'd' )
+        {
+            cout<< "\nYOU ARE ALREADY STANDING ON GROUND FLOOR!!\n"  ;
+            cout<< "CANNOT GO FURTHER DOWN!!\n"  ;
+            getchar( ) ;
+            flag = 0 ;
+        }
+        else
+            flag = 1 ;
+    }
+    flag = 0 ;
+
+    while ( flag == 0 )
+    {
+        cout<< "\nENTER THE FLOOR NUMBER WHERE YOU WANT TO GO: "  ;
+        cin>>gotofloor;
+
+        if ( ( userfloor == 0 && gotofloor == 0 ) ||
+             ( gotofloor < 0 || gotofloor > 29 ) ||
+             ( userfloor == gotofloor ) ||
+             ( ( userfloor != 0 ) && ( dir == 'd' && ( userfloor - gotofloor < 0 ) ) ) ||
+             ( ( userfloor != 0 ) && ( dir == 'u' && ( gotofloor < userfloor ) ) ) )
+        {
+            cout<< "\nINCORRECT FLOOR NUMBER OR YOU ARE TRYING TO MOVE TO THE SAME \n"  ;
+            cout<< "FLOOR WHERE YOU ARE STANDING OR EITHER THE \n" ;
+            cout<< " GIVEN DIRECTION IS INCORRECT OR THE FLOOR NUMBER \n"  ;
+            cout<< " IS INCORRECT.\nPLEASE TRY AGAIN!!" ;
+            flag = 0 ;
+        }
+        else
+            flag = 1 ;
+    }
+
+    *fs = userfloor ;
+    *d =  dir ;
+    *ft = gotofloor ;
+}
+
+int main( )
+{
+    int ch ;        /* stores the no. entered as a choice for the menu */
+int userfloor ;    /* to store floor no. where the user stands */
+int gotofloor ;    /* to store the target floor no. */
+char dir ;     /* to store the direction */
+char chr[20] ;     /* a temporary variable */
+int lf[5] = { 0, 0, 0, 0, 0 } ;
+
+    void validate ( int *, int *, char * ) ;
+
+    userfloor = gotofloor = -1 ;
+
+    while ( 1 )
+    {
+        /* display main menu */
+
+        ch = showmenu( ) ;
+
+        /* switch-case for menu options to be handled */
+switch ( ch )
+        {
+            case 1 :
+
+                    /* actual program logic */
+
+                    cout<< "ALLOT LIFT: \n"  ;
+                    validate ( &userfloor, &gotofloor, &dir)  ;
+                    allotlift ( lf, userfloor, gotofloor, dir ) ;
+                    break ;
+
+            case 2 :
+
+                    /* getstaus */
+
+                    cout<< "CURRENT STATUS OF LIFTS:\n";
+                    cout<<"\n";
+                    showstatus ( lf ) ;
+                    break ;
+
+            case 3 :
+
+                    /* exit program */
+
+                    exit ( 0 ) ;
+                    break ;
+
+            default :
+
+                    /* wrong choice */
+
+                    cout<< "INCORRECT CHOICE!!\nPLEASE TRY AGAIN!!"  ;
+        }
+
+        cout<< "\n\n"  ;
+        cout<< "PRESS ANY KEY AND THEN ENTER KEY TO CONTINUE USING THE LIFT!!\n";
+        cin>>chr ;
+    }
+}
+
+
+lift.cpp
+Displaying lift.cpp. 
